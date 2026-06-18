@@ -1,0 +1,6 @@
+{
+  "name": "NexTune X",
+  "description": "Premium Offline Music Player. Play Without Limits.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
