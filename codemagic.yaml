@@ -1,15 +1,39 @@
 workflows:
-android-release:
-name: NexTune X Release
+  android-debug:
+    name: NexTune X Debug Build
 
-environment:
-  java: 17
+    environment:
+      java: 17
 
-scripts:
-  - chmod +x gradlew || true
-  - ./gradlew clean
-  - ./gradlew assembleDebug --stacktrace
+    cache:
+      cache_paths:
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
 
-artifacts:
-  - app/build/outputs/**/*.apk
-  - app/build/outputs/**/*.aab
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+
+    scripts:
+      - name: Set permissions
+        script: chmod +x gradlew
+
+      - name: Check Gradle version
+        script: ./gradlew --version
+
+      - name: Clean project
+        script: ./gradlew clean
+
+      - name: Build Debug APK
+        script: ./gradlew assembleDebug
+
+    artifacts:
+      - app/build/outputs/**/*.apk
+
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
