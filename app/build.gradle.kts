@@ -9,13 +9,13 @@ plugins {
 android {
     namespace = "com.example"
 
-    // ✅ FIXED compileSdk (CRITICAL FIX)
     compileSdk = 36
 
     defaultConfig {
         applicationId = "com.nexvoralabs.nextunex"
         minSdk = 24
         targetSdk = 36
+
         versionCode = 1
         versionName = "1.0"
 
@@ -26,17 +26,11 @@ android {
         create("release") {
             val keystorePath =
                 System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
+
             storeFile = file(keystorePath)
             storePassword = System.getenv("STORE_PASSWORD")
             keyAlias = "upload"
             keyPassword = System.getenv("KEY_PASSWORD")
-        }
-
-        create("debugConfig") {
-            storeFile = file("${rootDir}/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
         }
     }
 
@@ -44,15 +38,18 @@ android {
         release {
             isCrunchPngs = false
             isMinifyEnabled = false
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
             signingConfig = signingConfigs.getByName("release")
         }
 
         debug {
-            signingConfig = signingConfigs.getByName("debugConfig")
+            // ✅ IMPORTANT FIX: no custom signing (CI SAFE)
+            isDebuggable = true
         }
     }
 
@@ -73,7 +70,7 @@ android {
     }
 }
 
-// Secrets Gradle Plugin config
+// ---------- Secrets ----------
 secrets {
     propertiesFileName = ".env"
     defaultPropertiesFileName = ".env.example"
@@ -100,7 +97,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
 
-    // ---------- DB ----------
+    // ---------- Database ----------
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
 
@@ -140,7 +137,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // ---------- KSP (FIXED) ----------
+    // ---------- KSP ----------
     ksp(libs.androidx.room.compiler)
     ksp(libs.moshi.kotlin.codegen)
 }
