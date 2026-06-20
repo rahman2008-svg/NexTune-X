@@ -1,0 +1,15 @@
+workflows:
+android-release:
+name: NexTune X Release
+
+environment:
+  java: 17
+
+scripts:
+  - chmod +x gradlew || true
+  - ./gradlew clean
+  - ./gradlew assembleDebug --stacktrace
+
+artifacts:
+  - app/build/outputs/**/*.apk
+  - app/build/outputs/**/*.aab
